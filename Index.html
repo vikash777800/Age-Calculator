@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+
+        table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        table td:first-child {
+            font-weight: 600;
+            background: #f9f9f9;
+        }
+
+        label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="date"]:focus {
+            border-color: #28a745;
+            outline: none;
+        }
+
+        /* Button Styles */
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+        }
+
+        /* Result Table Styles */
+        #result-table {
+            margin-top: 20px;
+            width: 100%;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            display: none; /* Hidden by default */
+        }
+
+        #result-table th {
+            background: #28a745;
+            color: #fff;
+            padding: 12px;
+            font-size: 18px;
+        }
+
+        #result-table td {
+            padding: 12px;
+            text-align: center;
+            font-size: 16px;
+            color: #333;
+        }
+
+        #result-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Age Calculator</h1>
+        <table>
+            <tr>
+                <td><label for="first-date">First Date:</label></td>
+                <td><input type="date" id="first-date" name="first-date"></td>
+            </tr>
+            <tr>
+                <td><label for="current-date">Current Date:</label></td>
+                <td><input type="date" id="current-date" name="current-date"></td>
+            </tr>
+        </table>
+        <button onclick="calculateAge()">Calculate</button>
+
+        <!-- Result Table -->
+        <table id="result-table">
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Years</td>
+                    <td id="years">-</td>
+                </tr>
+                <tr>
+                    <td>Months</td>
+                    <td id="months">-</td>
+                </tr>
+                <tr>
+                    <td>Weeks</td>
+                    <td id="weeks">-</td>
+                </tr>
+                <tr>
+                    <td>Days</td>
+                    <td id="days">-</td>
+                </tr>
+                <tr>
+                    <td>Hours</td>
+                    <td id="hours">-</td>
+                </tr>
+                <tr>
+                    <td>Seconds</td>
+                    <td id="seconds">-</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function calculateAge() {
+            const firstDateInput = document.getElementById('first-date').value;
+            const currentDateInput = document.getElementById('current-date').value;
+
+            if (!firstDateInput || !currentDateInput) {
+                alert("Please enter both dates.");
+                return;
+            }
+
+            const firstDate = new Date(firstDateInput);
+            const currentDate = new Date(currentDateInput);
+
+            if (firstDate > currentDate) {
+                alert("The first date cannot be after the current date.");
+                return;
+            }
+
+            const ageInMilliseconds = currentDate - firstDate;
+
+            // Constants for time calculations
+            const millisecondsPerYear = 1000 * 60 * 60 * 24 * 365.25; // Account for leap years
+            const millisecondsPerMonth = 1000 * 60 * 60 * 24 * 30.4375; // Average month length
+            const millisecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
+            const millisecondsPerDay = 1000 * 60 * 60 * 24;
+            const millisecondsPerHour = 1000 * 60 * 60;
+            const millisecondsPerSecond = 1000;
+
+            // Calculate each unit independently
+            const years = Math.floor(ageInMilliseconds / millisecondsPerYear);
+            const months = Math.floor(ageInMilliseconds / millisecondsPerMonth);
+            const weeks = Math.floor(ageInMilliseconds / millisecondsPerWeek);
+            const days = Math.floor(ageInMilliseconds / millisecondsPerDay);
+            const hours = Math.floor(ageInMilliseconds / millisecondsPerHour);
+            const seconds = Math.floor(ageInMilliseconds / millisecondsPerSecond);
+
+            // Update the result table
+            document.getElementById('years').textContent = years;
+            document.getElementById('months').textContent = months;
+            document.getElementById('weeks').textContent = weeks;
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('seconds').textContent = seconds;
+
+            // Show the result table
+            document.getElementById('result-table').style.display = 'table';
+        }
+    </script>
+</body>
+</html>
